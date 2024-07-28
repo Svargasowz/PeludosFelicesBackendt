@@ -13,7 +13,7 @@ export const validar = async(req, res) => {
             //!y esto para comparar la contraseña ingresada con la que tenemos registrar
             if (await comparacion(clave, user[0].clave)) {
                 //!Generar el token
-                const token = jwt.sign({ user: user[0] }, process.env.AUT_SECRET, { expiresIn: process.env.AUT_EXPIRE });
+                const token = jwt.sign({ user: user[0] },'holaaaaaaaaaaaaaaa', { expiresIn: '10h' });
                 return res.status(200).json({ user: user[0], token: token });
             } else {
                 return res.status(400).json({ message: 'Usuario o contraseña incorrectos' });
@@ -35,7 +35,7 @@ export const validarToken = async (req, res, next) => {
                 message: 'Token es requerido'
             });
         } else {
-            jwt.verify(tokenUsers, process.env.AUT_SECRET, (error, decoded) => {
+            jwt.verify(tokenUsers,'holaaaaaaaaaaaaaaa', (error, decoded) => {
                 if (error) {
                     return res.status(401).json({
                         message: 'Token inválido o expirado'
