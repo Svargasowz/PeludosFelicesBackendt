@@ -6,7 +6,7 @@ import { validarToken } from '../controllers/token.controller.js';
 
 const routerMascotas=Router();
 
-routerMascotas.get('/listar',validarToken,validationResultExpress,listarMascotas);
+routerMascotas.get('/listar',validationResultExpress,listarMascotas);
 routerMascotas.get('/perros',validarToken,validationResultExpress,buscarPerros);
 routerMascotas.get('/gatos',validarToken,validationResultExpress,buscarGatos);
 routerMascotas.get('/buscar/:codigo',validarToken,validationResultExpress,buscarMascotas);
