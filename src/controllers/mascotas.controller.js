@@ -208,7 +208,7 @@ export const buscarPerros = async (req, res) => {
             LEFT JOIN
                 municipio ON mascotas.fk_municipio = municipio.codigo 
             WHERE 
-                mascotas.fk_categoria = 1 AND  mascotas.estado = 1 OR mascotas.estado = 3
+                mascotas.fk_categoria = 1 AND (mascotas.estado = 1 OR mascotas.estado = 3)
         `);
 
         if (perros.length > 0) {
@@ -253,7 +253,7 @@ export const buscarGatos = async (req, res) => {
             LEFT JOIN
                 municipio ON mascotas.fk_municipio = municipio.codigo 
             WHERE 
-                mascotas.fk_categoria = 2 AND mascotas.estado = 1 OR mascotas.estado = 3
+                 mascotas.fk_categoria = 2 AND (mascotas.estado = 1 OR mascotas.estado = 3)
         `);
 
         if (gatos.length > 0) {
