@@ -46,7 +46,7 @@ export const confirmacionAdopcion = async (req,res)=>{
 export const listarAdopciones = async (req, res) => {
     try {
         const [adopciones] = await pool.query(`
-            SELECT 
+           SELECT 
                 adopciones.id,
                 mascotas.nombre AS nombre_mascota,
                 usuarios.nombres AS nombre_usuario,
@@ -54,15 +54,16 @@ export const listarAdopciones = async (req, res) => {
                 adopciones.fk_mascota AS mascota_codigo,
                 adopciones.fk_usuario AS usuario_cedula,
                 adopciones.estado AS estado_adopcion,
-                categorias.nombre AS categoria
+                categorias.nombre AS categoria,
+                DATE_FORMAT(adopciones.fecha, '%Y-%m-%d') AS fecha_creacion
             FROM 
                 adopciones
             LEFT JOIN 
                 mascotas ON adopciones.fk_mascota = mascotas.codigo
             LEFT JOIN 
                 usuarios ON adopciones.fk_usuario = usuarios.cedula
-                LEFT JOIN
-            categorias ON mascotas.fk_categoria = categorias.codigo
+            LEFT JOIN 
+                categorias ON mascotas.fk_categoria = categorias.codigo
             WHERE adopciones.estado = 2
         `);
 
@@ -111,7 +112,7 @@ export const listarAdopcionesRechazadas = async (req, res) => {
 export const listarAdopcionesAceptadas = async (req,res)=>{
     try {
         const [aceptadas] = await pool.query(`
-            SELECT 
+           SELECT 
                 adopciones.id,
                 mascotas.nombre AS nombre_mascota,
                 usuarios.nombres AS nombre_usuario,
@@ -119,15 +120,16 @@ export const listarAdopcionesAceptadas = async (req,res)=>{
                 adopciones.fk_mascota AS mascota_codigo,
                 adopciones.fk_usuario AS usuario_cedula,
                 adopciones.estado AS estado_adopcion,
-                categorias.nombre AS categoria
+                categorias.nombre AS categoria,
+                DATE_FORMAT(adopciones.fecha, '%Y-%m-%d') AS fecha_creacion
             FROM 
                 adopciones
             LEFT JOIN 
                 mascotas ON adopciones.fk_mascota = mascotas.codigo
             LEFT JOIN 
                 usuarios ON adopciones.fk_usuario = usuarios.cedula
-            LEFT JOIN
-            categorias ON mascotas.fk_categoria = categorias.codigo
+            LEFT JOIN 
+                categorias ON mascotas.fk_categoria = categorias.codigo
             WHERE adopciones.estado = 1
         `);
 
@@ -142,10 +144,9 @@ export const listarAdopcionesAceptadas = async (req,res)=>{
 }
 
 
-
 export const listarMisAdopciones = async (req, res) => {
     try {
-        const {cedula} = req.params
+        const {cedula} = req.params;
         const [misAdopcioness] = await pool.query(`
             SELECT 
                 adopciones.id,
@@ -155,17 +156,19 @@ export const listarMisAdopciones = async (req, res) => {
                 adopciones.fk_mascota AS mascota_codigo,
                 adopciones.fk_usuario AS usuario_cedula,
                 adopciones.estado AS estado_adopcion,
-                categorias.nombre AS categoria
+                categorias.nombre AS categoria,
+                DATE_FORMAT(adopciones.fecha, '%Y-%m-%d') AS fecha_creacion
             FROM 
                 adopciones
             LEFT JOIN 
                 mascotas ON adopciones.fk_mascota = mascotas.codigo
             LEFT JOIN 
                 usuarios ON adopciones.fk_usuario = usuarios.cedula
-                LEFT JOIN
-            categorias ON mascotas.fk_categoria = categorias.codigo
-            WHERE usuarios.cedula = ?
-        `,[cedula]);
+            LEFT JOIN 
+                categorias ON mascotas.fk_categoria = categorias.codigo
+            WHERE 
+                usuarios.cedula = ?
+        `, [cedula]);
 
         if (misAdopcioness.length > 0) {
             res.status(200).json({ misAdopcioness });
@@ -176,7 +179,6 @@ export const listarMisAdopciones = async (req, res) => {
         res.status(500).json({ message: 'Error en el sistema: ' + error });
     }
 };
-
 
 export const eliminarAdopcion = async (req,res)=>{
     try{
