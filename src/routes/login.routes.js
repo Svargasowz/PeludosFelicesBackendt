@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validationResultExpress } from "../middleware/validacionErrores.js";
 import {validar, validarToken} from '../controllers/token.controller.js';
-import { registrarUsuarios,listarUsuarios,buscarUsuario,buscarAdministrador,actualizarUsuario } from "../controllers/usuario.controller.js";
+import { registrarUsuarios,listarUsuarios,buscarUsuario,buscarAdministrador,actualizarUsuario,actualizarEstado,eliminarUsuario } from "../controllers/usuario.controller.js";
 
 const routerLogin=Router();
 
@@ -16,5 +16,9 @@ routerLogin.get('/buscar/:cedula',validarToken,validationResultExpress,buscarUsu
 routerLogin.get('/administrador',validationResultExpress,buscarAdministrador)
 
 routerLogin.put('/actualizar/:cedula',validarToken,validationResultExpress,actualizarUsuario)
+
+routerLogin.put('/actualizarEstado/:cedula',validarToken,validationResultExpress,actualizarEstado)
+
+routerLogin.delete('/eliminar/:cedula',validarToken,validationResultExpress,eliminarUsuario)
 
 export default routerLogin;
