@@ -19,8 +19,8 @@ export const listarCategoria=async (req,res)=>{
 export const registrarCategorias = async (req,res)=>{
     try{
         const {nombre} = req.body
-        const [result] = await pool.query("INSERT INTO categorias (nombre) VALUES (?)", [nombre])
-        if(result.affectedRows > 0){
+        const [categorias] = await pool.query("INSERT INTO categorias (nombre) VALUES (?)", [nombre])
+        if(categorias.affectedRows > 0){
             res.status(200).json({message: 'Categorias registrado con éxito'})
         }
         else{

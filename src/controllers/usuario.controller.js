@@ -26,13 +26,13 @@ export const registrarUsuarios = async (req, res) => {
 
 export const listarUsuarios = async (req, res) => {
     try {
-        const [usuarios] = await pool.query("SELECT * FROM usuarios WHERE rol = 1");
+        const [usuarios] = await pool.query("SELECT * FROM usuarios WHERE rol = 1 OR rol = 3");
 
         if (usuarios.length > 0) {
             res.status(200).json(usuarios);
         } else {
             res.status(404).json({
-                message: 'No hay usuarios adoptantes'
+                message: 'No hay usuarios ni adoptantes ni '
             });
         }
     } catch (error) {
