@@ -18,11 +18,11 @@ export const cargarImagen = upload.single('foto');
 
 export const registrarMascotas = async (req, res)=>{
     try{
-        const {nombre,fk_categoria,edad,fk_genero,descripcion,ubicacion,castrado,vacunas,fk_municipio,antecedentes} = req.body
+        const {nombre,fk_categoria,edad,fk_genero,descripcion,ubicacion,castrado,vacunas,fk_municipio,fk_usuario,antecedentes} = req.body
 
         const foto = req.file.originalname;
        
-        const [result] = await pool.query("INSERT INTO mascotas (nombre, fk_categoria, edad, fk_genero, foto, descripcion, ubicacion, castrado, vacunas, fk_municipio,antecedentes, estado) VALUES (?,?,?,?,?,?,?,?,?,?,?,1)",[nombre,fk_categoria,edad,fk_genero,foto,descripcion,ubicacion,castrado,vacunas,fk_municipio,antecedentes]);
+        const [result] = await pool.query("INSERT INTO mascotas (nombre, fk_categoria, edad, fk_genero, foto, descripcion, ubicacion, castrado, vacunas, fk_municipio,antecedentes,fk_usuario, estado) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1)",[nombre,fk_categoria,edad,fk_genero,foto,descripcion,ubicacion,castrado,vacunas,fk_municipio,fk_usuario,antecedentes]);
 
         if (result.affectedRows > 0) {
             res.status(200).json({
@@ -48,7 +48,7 @@ export const listarMascotas = async (req, res) => {
                 mascotas.codigo,
                 mascotas.nombre,
                 categorias.nombre AS categoria,
-                categorias.codigo As fk_categorias,
+                categorias.codigo AS fk_categorias,
                 mascotas.edad,
                 genero.nombre AS genero,
                 genero.codigo AS fk_genero,
@@ -58,7 +58,11 @@ export const listarMascotas = async (req, res) => {
                 mascotas.castrado,
                 mascotas.vacunas,
                 municipio.nombre AS municipio,
-                municipio.codigo AS fk_municipio
+                municipio.codigo AS fk_municipio,
+                mascotas.ubicacion,
+                mascotas.antecedentes,
+                usuarios.nombres AS usuario_nombre,
+                usuarios.apellidos AS usuario_apellido
             FROM 
                 mascotas
             LEFT JOIN 
@@ -67,8 +71,10 @@ export const listarMascotas = async (req, res) => {
                 genero ON mascotas.fk_genero = genero.codigo
             LEFT JOIN
                 municipio ON mascotas.fk_municipio = municipio.codigo 
-                WHERE 
-                mascotas.estado = 1 OR mascotas.estado = 3
+            LEFT JOIN
+                usuarios ON mascotas.fk_usuario = usuarios.cedula
+            WHERE 
+                mascotas.estado = 'disponible' OR mascotas.estado = 'pendiente'
         `);
 
         if (todos.length > 0) {
@@ -80,6 +86,7 @@ export const listarMascotas = async (req, res) => {
         res.status(500).json({ message: 'Error en el sistema: ' + error });
     }
 };
+
 
 
 //!ESTADOS_MASCOTA
