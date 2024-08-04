@@ -62,7 +62,7 @@ export const listarMascotas = async (req, res) => {
                 mascotas.ubicacion,
                 mascotas.antecedentes,
                 usuarios.nombres AS usuario_nombre,
-                usuarios.apellidos AS usuario_apellido
+                usuarios.cedula AS cedula
             FROM 
                 mascotas
             LEFT JOIN 
@@ -111,7 +111,7 @@ export const buscarMisMascotas = async (req, res) => {
                 mascotas.ubicacion,
                 mascotas.antecedentes,
                 usuarios.nombres AS usuario_nombre,
-                usuarios.apellidos AS usuario_apellido
+                usuarios.cedula AS cedula
             FROM 
                 mascotas
             LEFT JOIN 
@@ -260,7 +260,7 @@ export const buscarPerros = async (req, res) => {
                 mascotas.ubicacion,
                 mascotas.antecedentes,
                 usuarios.nombres AS usuario_nombre,
-                usuarios.apellidos AS usuario_apellido
+                usuarios.cedula AS cedula
             FROM 
                 mascotas
             LEFT JOIN 
@@ -311,7 +311,7 @@ export const buscarGatos = async (req, res) => {
                 mascotas.ubicacion,
                 mascotas.antecedentes,
                 usuarios.nombres AS usuario_nombre,
-                usuarios.apellidos AS usuario_apellido
+                usuarios.cedula AS cedula
             FROM 
                 mascotas
             LEFT JOIN 
@@ -360,7 +360,7 @@ export const buscarMascotas = async (req, res) => {
                 mascotas.ubicacion,
                 mascotas.antecedentes,
                 usuarios.nombres AS usuario_nombre,
-                usuarios.apellidos AS usuario_apellido
+                usuarios.cedula AS cedula
             FROM 
                 mascotas
             LEFT JOIN 
