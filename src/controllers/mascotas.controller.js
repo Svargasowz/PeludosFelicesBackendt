@@ -18,11 +18,11 @@ export const cargarImagen = upload.single('foto');
 
 export const registrarMascotas = async (req, res)=>{
     try{
-        const {nombre,fk_categoria,edad,fk_genero,descripcion,ubicacion,castrado,vacunas,fk_municipio,fk_usuario,antecedentes} = req.body
+        const {nombre,fk_categoria,edad,fk_genero,descripcion,ubicacion,castrado,vacunas,fk_municipio,antecedentes,fk_usuario} = req.body
 
         const foto = req.file.originalname;
        
-        const [result] = await pool.query("INSERT INTO mascotas (nombre, fk_categoria, edad, fk_genero, foto, descripcion, ubicacion, castrado, vacunas, fk_municipio,antecedentes,fk_usuario, estado) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1)",[nombre,fk_categoria,edad,fk_genero,foto,descripcion,ubicacion,castrado,vacunas,fk_municipio,fk_usuario,antecedentes]);
+        const [result] = await pool.query("INSERT INTO mascotas (nombre, fk_categoria, edad, fk_genero, foto, descripcion, ubicacion, castrado, vacunas, fk_municipio,antecedentes,fk_usuario, estado) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1)",[nombre,fk_categoria,edad,fk_genero,foto,descripcion,ubicacion,castrado,vacunas,fk_municipio,antecedentes,fk_usuario]);
 
         if (result.affectedRows > 0) {
             res.status(200).json({
@@ -217,12 +217,12 @@ export const mascotaEliminada = async (req,res) =>{
 export const actualizarMascotas = async (req, res) => {
     try {
         const { codigo } = req.params;
-        const { nombre, fk_categoria, edad, fk_genero, descripcion, ubicacion, castrado, vacunas, fk_municipio,fk_usuario, antecedentes } = req.body;
+        const { nombre, fk_categoria, edad, fk_genero, descripcion, ubicacion, castrado, vacunas, fk_municipio, antecedentes,fk_usuario } = req.body;
         const foto = req.file ? req.file.originalname : null;
 
         const [result] = await pool.query(
-            'UPDATE mascotas SET nombre = IFNULL(?, nombre), fk_categoria = IFNULL(?, fk_categoria), edad = IFNULL(?, edad), fk_genero = IFNULL(?, fk_genero), foto = IFNULL(?, foto), descripcion = IFNULL(?, descripcion), ubicacion = IFNULL(?, ubicacion), castrado = IFNULL(?, castrado), vacunas = IFNULL(?, vacunas), fk_municipio = IFNULL(?, fk_municipio),fk_usuario = IFNULL(?,fk_usuario), antecedentes = IFNULL(?, antecedentes) WHERE codigo = ?',
-            [nombre, fk_categoria, edad, fk_genero, foto, descripcion, ubicacion, castrado, vacunas, fk_municipio,fk_usuario, antecedentes, codigo]
+            'UPDATE mascotas SET nombre = IFNULL(?, nombre), fk_categoria = IFNULL(?, fk_categoria), edad = IFNULL(?, edad), fk_genero = IFNULL(?, fk_genero), foto = IFNULL(?, foto), descripcion = IFNULL(?, descripcion), ubicacion = IFNULL(?, ubicacion), castrado = IFNULL(?, castrado), vacunas = IFNULL(?, vacunas), fk_municipio = IFNULL(?, fk_municipio), antecedentes = IFNULL(?, antecedentes),fk_usuario = IFNULL(?,fk_usuario) WHERE codigo = ?',
+            [nombre, fk_categoria, edad, fk_genero, foto, descripcion, ubicacion, castrado, vacunas, fk_municipio, antecedentes,fk_usuario, codigo]
         );
 
         if (result.affectedRows > 0) {
