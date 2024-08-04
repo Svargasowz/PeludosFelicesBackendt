@@ -92,7 +92,7 @@ export const listarMascotas = async (req, res) => {
 export const buscarMisMascotas = async (req, res) => {
     try {
         const {cedula} = req.params
-        const [todos] = await pool.query(`
+        const [misMascotas] = await pool.query(`
             SELECT 
                 mascotas.codigo,
                 mascotas.nombre,
@@ -127,8 +127,8 @@ export const buscarMisMascotas = async (req, res) => {
                 AND usuarios.cedula = ?
         `,[cedula]);
 
-        if (todos.length > 0) {
-            res.status(200).json({ todos });
+        if (misMascotas.length > 0) {
+            res.status(200).json({ misMascotas });
         } else {
             res.status(404).json({ message: 'No hay mascotas registradas' });
         }
