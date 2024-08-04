@@ -120,6 +120,27 @@ export const actualizarEstado = async (req, res) => {
         });
     }
 }
+export const actualizarEstado_Usuario = async (req, res) => {
+    try {
+        const { cedula } = req.params
+
+        const [confirmacion] = await pool.query("UPDATE usuarios SET rol = 1 WHERE cedula=?", [cedula])
+
+        if (confirmacion.affectedRows > 0) {
+            res.status(200).json({
+                message: 'Cambio de rol exitoso'
+            })
+        } else {
+            res.status(404).json({
+                message: 'Error al cambiar de rol'
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error en el servidor ' + error
+        });
+    }
+}
 
 export const eliminarUsuario = async (req,res)=>{
     try{
