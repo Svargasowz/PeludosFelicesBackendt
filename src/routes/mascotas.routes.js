@@ -1,6 +1,6 @@
 import Router from 'express';
 import { validationResultExpress } from '../middleware/validacionErrores.js';
-import {registrarMascotas,listarMascotas,mascotaAdoptada,mascotaPendiente,mascotaEliminada,buscarPerros,buscarGatos,buscarMascotas,actualizarMascotas,mascotaDisponible} from '../controllers/mascotas.controller.js'
+import {registrarMascotas,listarMascotas,mascotaAdoptada,mascotaPendiente,mascotaEliminada,buscarPerros,buscarGatos,buscarMascotas,actualizarMascotas,mascotaDisponible,buscarMisMascotas} from '../controllers/mascotas.controller.js'
 import { cargarImagen } from '../controllers/mascotas.controller.js';
 import { validarToken } from '../controllers/token.controller.js';
 
@@ -13,6 +13,8 @@ routerMascotas.get('/buscar/:codigo',validarToken,validationResultExpress,buscar
 routerMascotas.post('/registrar',validarToken,cargarImagen,validationResultExpress,registrarMascotas);
 routerMascotas.delete('/eliminar/:codigo',validarToken,validationResultExpress,mascotaEliminada);
 routerMascotas.put('/actualizar/:codigo',validarToken,cargarImagen,validationResultExpress,actualizarMascotas);
+
+routerMascotas.get('/misMascotas/:cedula',validarToken,validationResultExpress,buscarMisMascotas);
 
 
 routerMascotas.put('/pendiente/:codigo',validarToken,validationResultExpress,mascotaPendiente);

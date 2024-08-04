@@ -87,6 +87,58 @@ export const listarMascotas = async (req, res) => {
     }
 };
 
+//!BUSCAR MIS MASCOTAS
+
+export const buscarMisMascotas = async (req, res) => {
+    try {
+        const {cedula} = req.params
+        const [todos] = await pool.query(`
+            SELECT 
+                mascotas.codigo,
+                mascotas.nombre,
+                categorias.nombre AS categoria,
+                categorias.codigo AS fk_categorias,
+                mascotas.edad,
+                genero.nombre AS genero,
+                genero.codigo AS fk_genero,
+                mascotas.foto,
+                mascotas.descripcion,
+                mascotas.estado,
+                mascotas.castrado,
+                mascotas.vacunas,
+                municipio.nombre AS municipio,
+                municipio.codigo AS fk_municipio,
+                mascotas.ubicacion,
+                mascotas.antecedentes,
+                usuarios.nombres AS usuario_nombre,
+                usuarios.apellidos AS usuario_apellido
+            FROM 
+                mascotas
+            LEFT JOIN 
+                categorias ON mascotas.fk_categoria = categorias.codigo
+            LEFT JOIN 
+                genero ON mascotas.fk_genero = genero.codigo
+            LEFT JOIN
+                municipio ON mascotas.fk_municipio = municipio.codigo 
+            LEFT JOIN
+                usuarios ON mascotas.fk_usuario = usuarios.cedula
+             WHERE 
+                (mascotas.estado = 'disponible' OR mascotas.estado = 'pendiente')
+                AND usuarios.cedula = ?
+        `,[cedula]);
+
+        if (todos.length > 0) {
+            res.status(200).json({ todos });
+        } else {
+            res.status(404).json({ message: 'No hay mascotas registradas' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error en el sistema: ' + error });
+    }
+};
+
+
+
 
 
 //!ESTADOS_MASCOTA
@@ -165,12 +217,12 @@ export const mascotaEliminada = async (req,res) =>{
 export const actualizarMascotas = async (req, res) => {
     try {
         const { codigo } = req.params;
-        const { nombre, fk_categoria, edad, fk_genero, descripcion, ubicacion, castrado, vacunas, fk_municipio, antecedentes } = req.body;
+        const { nombre, fk_categoria, edad, fk_genero, descripcion, ubicacion, castrado, vacunas, fk_municipio,fk_usuario, antecedentes } = req.body;
         const foto = req.file ? req.file.originalname : null;
 
         const [result] = await pool.query(
-            'UPDATE mascotas SET nombre = IFNULL(?, nombre), fk_categoria = IFNULL(?, fk_categoria), edad = IFNULL(?, edad), fk_genero = IFNULL(?, fk_genero), foto = IFNULL(?, foto), descripcion = IFNULL(?, descripcion), ubicacion = IFNULL(?, ubicacion), castrado = IFNULL(?, castrado), vacunas = IFNULL(?, vacunas), fk_municipio = IFNULL(?, fk_municipio), antecedentes = IFNULL(?, antecedentes) WHERE codigo = ?',
-            [nombre, fk_categoria, edad, fk_genero, foto, descripcion, ubicacion, castrado, vacunas, fk_municipio, antecedentes, codigo]
+            'UPDATE mascotas SET nombre = IFNULL(?, nombre), fk_categoria = IFNULL(?, fk_categoria), edad = IFNULL(?, edad), fk_genero = IFNULL(?, fk_genero), foto = IFNULL(?, foto), descripcion = IFNULL(?, descripcion), ubicacion = IFNULL(?, ubicacion), castrado = IFNULL(?, castrado), vacunas = IFNULL(?, vacunas), fk_municipio = IFNULL(?, fk_municipio),fk_usuario = IFNULL(?,fk_usuario), antecedentes = IFNULL(?, antecedentes) WHERE codigo = ?',
+            [nombre, fk_categoria, edad, fk_genero, foto, descripcion, ubicacion, castrado, vacunas, fk_municipio,fk_usuario, antecedentes, codigo]
         );
 
         if (result.affectedRows > 0) {
@@ -194,7 +246,7 @@ export const buscarPerros = async (req, res) => {
                 mascotas.codigo,
                 mascotas.nombre,
                 categorias.nombre AS categoria,
-                categorias.codigo As fk_categorias,
+                categorias.codigo AS fk_categorias,
                 mascotas.edad,
                 genero.nombre AS genero,
                 genero.codigo AS fk_genero,
@@ -204,8 +256,11 @@ export const buscarPerros = async (req, res) => {
                 mascotas.castrado,
                 mascotas.vacunas,
                 municipio.nombre AS municipio,
-                municipio.codigo AS fk_municipio
-
+                municipio.codigo AS fk_municipio,
+                mascotas.ubicacion,
+                mascotas.antecedentes,
+                usuarios.nombres AS usuario_nombre,
+                usuarios.apellidos AS usuario_apellido
             FROM 
                 mascotas
             LEFT JOIN 
@@ -214,6 +269,8 @@ export const buscarPerros = async (req, res) => {
                 genero ON mascotas.fk_genero = genero.codigo
             LEFT JOIN
                 municipio ON mascotas.fk_municipio = municipio.codigo 
+            LEFT JOIN
+                usuarios ON mascotas.fk_usuario = usuarios.cedula
             WHERE 
                 mascotas.fk_categoria = 1 AND (mascotas.estado = 1 OR mascotas.estado = 3)
         `);
@@ -240,7 +297,7 @@ export const buscarGatos = async (req, res) => {
                 mascotas.codigo,
                 mascotas.nombre,
                 categorias.nombre AS categoria,
-                categorias.codigo As fk_categorias,
+                categorias.codigo AS fk_categorias,
                 mascotas.edad,
                 genero.nombre AS genero,
                 genero.codigo AS fk_genero,
@@ -250,7 +307,11 @@ export const buscarGatos = async (req, res) => {
                 mascotas.castrado,
                 mascotas.vacunas,
                 municipio.nombre AS municipio,
-                municipio.codigo AS fk_municipio
+                municipio.codigo AS fk_municipio,
+                mascotas.ubicacion,
+                mascotas.antecedentes,
+                usuarios.nombres AS usuario_nombre,
+                usuarios.apellidos AS usuario_apellido
             FROM 
                 mascotas
             LEFT JOIN 
@@ -259,6 +320,8 @@ export const buscarGatos = async (req, res) => {
                 genero ON mascotas.fk_genero = genero.codigo
             LEFT JOIN
                 municipio ON mascotas.fk_municipio = municipio.codigo 
+            LEFT JOIN
+                usuarios ON mascotas.fk_usuario = usuarios.cedula
             WHERE 
                  mascotas.fk_categoria = 2 AND (mascotas.estado = 1 OR mascotas.estado = 3)
         `);
@@ -279,11 +342,11 @@ export const buscarMascotas = async (req, res) => {
     try {
         const { codigo } = req.params; 
         const [buscar] = await pool.query(`
-            SELECT 
+             SELECT 
                 mascotas.codigo,
                 mascotas.nombre,
                 categorias.nombre AS categoria,
-                categorias.codigo As fk_categorias,
+                categorias.codigo AS fk_categorias,
                 mascotas.edad,
                 genero.nombre AS genero,
                 genero.codigo AS fk_genero,
@@ -292,10 +355,12 @@ export const buscarMascotas = async (req, res) => {
                 mascotas.estado,
                 mascotas.castrado,
                 mascotas.vacunas,
-                 mascotas.ubicacion,
-                 mascotas.antecedentes,
                 municipio.nombre AS municipio,
-                municipio.codigo AS fk_municipio
+                municipio.codigo AS fk_municipio,
+                mascotas.ubicacion,
+                mascotas.antecedentes,
+                usuarios.nombres AS usuario_nombre,
+                usuarios.apellidos AS usuario_apellido
             FROM 
                 mascotas
             LEFT JOIN 
@@ -304,6 +369,8 @@ export const buscarMascotas = async (req, res) => {
                 genero ON mascotas.fk_genero = genero.codigo
             LEFT JOIN
                 municipio ON mascotas.fk_municipio = municipio.codigo 
+            LEFT JOIN
+                usuarios ON mascotas.fk_usuario = usuarios.cedula
             WHERE 
                 mascotas.codigo = ?
         `, [codigo]); 
